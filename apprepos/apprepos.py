@@ -27,13 +27,15 @@ def insert_or_update_appdetail(uniq_name,name,price):
 	cur = conn.cursor()
 	sqli = "select * from tb_apps where app_uniq_name = \'{0}\'".format(uniq_name)
 	r = cur.execute(sqli)
+	isonsale = False
 	if 0 == r:
 		sqli = "insert into tb_apps({0},{1},{2},{3},{4}) values(\'{5}\',\'{6}\',{7},{8},{9})".format(tb_apps_col_names[0],tb_apps_col_names[1],tb_apps_col_names[2],tb_apps_col_names[3],tb_apps_col_names[4], uniq_name, name, isfree(price), "NULL", price)
 	else:
 		sqli = "update tb_apps set app_name = \'{0}\', app_isfree = \'{1}\', app_price = \'{2}\' where app_uniq_name = \'{3}\'".format(name, isfree(price), price, uniq_name)
+		isonsale = r.fetchone()[5] > price
 	r = cur.execute(sqli)
 	cur.close()
-	return r != 0
+	return isonsale
 
 def get_appdetail_by_uniqname(uniq_name):
 	cur = conn.cursor()
@@ -46,6 +48,19 @@ def get_appdetail_by_uniqname(uniq_name):
 		rst = AppDetail(appdata[1],appdata[2],appdata[5])
 	cur.close()
 	return rst
+
+def get_all_uniqname():
+	cur = conn.cursor()
+	sqli = "select app_uniq_name from tb_apps"
+	r = cur.execute(sqli)
+	if 0 == r:
+		return None
+	else:
+		return cur.fetchall()
+
+def set_notice(uniq_name):
+	cur = conn.cursor()
+	sqli = "update tb_apps_notice set time = getdate() where app_id in (select app_id from tb_apps where app_uniq_name = \'{0}\')".format(uniq_name)
 
 def isfree(price):
 	if price == 0:
