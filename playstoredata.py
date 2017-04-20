@@ -47,6 +47,11 @@ def update_all_data_from_appmonsta():
 			time.sleep(5)
 		apprepos.commit_and_close()
 
+def get_notice_apps():
+	apprepos.connect()
+	lst = apprepos.get_notice_apps_detail()
+	return lst
+
 def doller_to_float(str):
 	p = re.compile(r"\d+\.?\d{0,2}")
 	m = p.search(str)
