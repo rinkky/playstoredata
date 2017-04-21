@@ -1,11 +1,18 @@
 #! python2
-# coding: utf-8
+# coding=utf-8
 
 import MySQLdb
 import dbconfig as cfg
 from appdetail import AppDetail
 
-tb_apps_col_names = ("app_uniq_name", "app_name", "app_isfree", "app_price_id", "app_price")
+tb_apps_col_names = (
+	"app_uniq_name", 
+	"app_name", 
+	"app_isfree", 
+	"app_price_id", 
+	"app_price"
+)
+
 conn = None
 
 def connect():
@@ -16,25 +23,44 @@ def connect():
 		user = cfg.user,
 		passwd = cfg.passwd,
 		db = cfg.db
-		)
+	)
 
 def commit_and_close():
-	if conn :
+	if conn:
 		conn.commit()
 		conn.close()
 
 def insert_or_update_appdetail(uniq_name,name,price):
 	cur = conn.cursor()
-	sqli = "select * from tb_apps where app_uniq_name = \'{0}\'".format(uniq_name)
+	sqli = (
+		"select * from tb_apps where app_uniq_name = \'{0}\'"
+	).format(uniq_name)
 	r = cur.execute(sqli)
 	isonsale = False
 	if 0 == r:
-		sqli = "insert into tb_apps({0},{1},{2},{3},{4}) values(\'{5}\',\'{6}\',{7},{8},{9})".format(tb_apps_col_names[0],tb_apps_col_names[1],tb_apps_col_names[2],tb_apps_col_names[3],tb_apps_col_names[4], uniq_name, name, isfree(price), "NULL", price)
+		sqli = (
+			"insert into tb_apps({0},{1},{2},{3},{4}) values"
+			"(\'{5}\',\'{6}\',{7},{8},{9})"
+		).format(
+			tb_apps_col_names[0],tb_apps_col_names[1],
+			tb_apps_col_names[2],tb_apps_col_names[3],
+			tb_apps_col_names[4], uniq_name, name, 
+			isfree(price), "NULL", price
+		)
 	else:
-		sqli = "update tb_apps set app_name = \'{0}\', app_isfree = \'{1}\', app_price = \'{2}\' where app_uniq_name = \'{3}\'".format(name, isfree(price), price, uniq_name)
-		detail = r.fetchone()
+		sqli = (
+			"update tb_apps set app_name = \'{0}\', app_isfree = \'{1}\',"
+			" app_price = \'{2}\' where app_uniq_name = \'{3}\'"
+		).format(
+			name, isfree(price), price, uniq_name
+		)
+		detail = cur.fetchone()
 		if(detail[5] > price):
-			sqli1 = "replace into tb_apps_notice(app_id, time) values (\'{0}\' , getdate())".format(detail[0])
+			isonsale = True
+			sqli1 = (
+				"replace into tb_apps_notice(app_id, time) values"
+				"(\'{0}\' , curdate())"
+			).format(detail[0])
 			cur.execute(sqli1)
 	r = cur.execute(sqli)
 	cur.close()
@@ -42,7 +68,10 @@ def insert_or_update_appdetail(uniq_name,name,price):
 
 def get_appdetail_by_uniqname(uniq_name):
 	cur = conn.cursor()
-	sqli = "select * from tb_apps where app_uniq_name = \'{0}\'".format(uniq_name)
+	sqli = (
+		"select * from tb_apps where app_uniq_name"
+		" = \'{0}\'"
+	).format(uniq_name)
 	r = cur.execute(sqli)
 	if 0 == r:
 		rst = None
@@ -55,8 +84,9 @@ def get_appdetail_by_uniqname(uniq_name):
 def get_appdetail_by_uniqnames(uniq_names):
 	cur = conn.cursor()
 	rst = []
-	for uniq_name in uniq_names :
-		sqli = "select * from tb_apps where app_uniq_name = \'{0}\'".format(uniq_name)
+	for uniq_name in uniq_names:
+		sqli = ("select * from tb_apps where app_uniq_name = \'{0}\'"
+		).format(uniq_name)
 		r = cur.execute(sqli)
 		if 0 != r:
 			appdata = cur.fetchone()
@@ -67,26 +97,26 @@ def get_appdetail_by_uniqnames(uniq_names):
 
 def get_appdetail_by_appids(ids):
 	cur = conn.cursor()
-	lst = []
-	for appid in ids :
+	apps = []
+	for appid in ids:
 		sqli = "select * from tb_apps where app_id = \'{0}\'".format(appid)
 		r = cur.execute(sqli)
 		if 0 != r:
 			appdata = cur.fetchone()
 			item = AppDetail(appdata[1],appdata[2],appdata[5])
-			lst.append(item)
+			apps.append(item)
 	cur.close()
-	return lst
+	return apps
 
 def get_notice_apps_detail():
 	cur = conn.cursor()
 	sqli = "select app_id from tb_apps_notice"
 	r = cur.execute(sqli)
 	ids = []
-	if r = 0 :
+	if r == 0:
 		cur.close()
 		return None
-	else :
+	else:
 		ids = r.fetchall()
 		cur.close()
 		return get_appdetail_by_appids(ids)
@@ -102,14 +132,17 @@ def get_all_uniqname():
 	sqli = "select app_uniq_name from tb_apps"
 	r = cur.execute(sqli)
 	rst = []
-	if r > 0 :
+	if r > 0:
 		rst = cur.fetchall()
 	cur.close()
 	return rst
 
 def set_notice(app_id):
 	cur = conn.cursor()
-	sqli = "replace into tb_apps_notice(app_id, time) values (\'{0}\' , getdate())".format(app_id)
+	sqli = (
+		"replace into tb_apps_notice(app_id, time) "
+		"values (\'{0}\' , getdate())"
+	).format(app_id)
 	cur.execute(sqli)
 	cur.close()
 
@@ -118,3 +151,4 @@ def isfree(price):
 		return 1
 	else:
 		return 0
+

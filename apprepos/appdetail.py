@@ -1,5 +1,5 @@
 #! python2
-# coding: UTF-8
+# coding=utf-8
 
 class AppDetail(object):
 	def __init__(self, uniq_name, name, price):
