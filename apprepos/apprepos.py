@@ -99,7 +99,7 @@ def get_appdetail_by_appids(ids):
 	cur = conn.cursor()
 	apps = []
 	for appid in ids:
-		sqli = "select * from tb_apps where app_id = \'{0}\'".format(appid)
+		sqli = "select * from tb_apps where app_id = {0}".format(str(appid))
 		r = cur.execute(sqli)
 		if 0 != r:
 			appdata = cur.fetchone()
@@ -117,9 +117,9 @@ def get_notice_apps_detail():
 		cur.close()
 		return None
 	else:
-		ids = r.fetchall()
+		ids = cur.fetchall()
 		cur.close()
-		return get_appdetail_by_appids(ids)
+		return get_appdetail_by_appids([x[0] for x in ids])
 
 def clean_notice_apps():
 	cur = conn.cursor()

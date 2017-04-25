@@ -64,6 +64,7 @@ def update_all_data_from_appmonsta():
 def get_notice_apps():
 	apprepos.connect()
 	apps = apprepos.get_notice_apps_detail()
+	apprepos.commit_and_close()
 	return apps
 
 def _insert_or_update_data(uniq_name,name,price):
@@ -82,7 +83,7 @@ def _doller_to_float(str):
 
 
 #test case
-if __name__ == "__main__":
+#if __name__ == "__main__":
 #1. exist in mysql
 	#r = get_app_detail("com.noodlecake.chameleonrun")
 	#print(r)
