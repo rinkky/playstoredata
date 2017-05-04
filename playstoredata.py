@@ -11,6 +11,11 @@ keynames = (
 	"name",
 	"price"
 )
+def get_all_uniqname():
+	apprepos.connect()
+	apps = apprepos.get_all_uniqname()
+	apprepos.commit_and_close()
+	return apps
 
 def get_app_detail(uniq_name):
 	apprepos.connect()
