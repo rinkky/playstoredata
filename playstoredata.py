@@ -66,6 +66,11 @@ def get_notice_apps():
 	apps = apprepos.get_notice_apps_detail()
 	apprepos.commit_and_close()
 	return apps
+	
+def clean_notice_apps():
+	apprepos.connect()
+	apprepos.clean_notice_apps()
+	apprepos.commit_and_close()
 
 def _insert_or_update_data(uniq_name,name,price):
 	apprepos.connect()
