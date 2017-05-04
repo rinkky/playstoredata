@@ -135,7 +135,7 @@ def get_all_uniqname():
 	if r > 0:
 		rst = cur.fetchall()
 	cur.close()
-	return rst
+	return [x[0] for x in rst]
 
 def set_notice(app_id):
 	cur = conn.cursor()
