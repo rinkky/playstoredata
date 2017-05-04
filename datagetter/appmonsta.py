@@ -19,11 +19,11 @@ def get_detail_by_uniqname(uniq_name):
 	    stream = True
 	)
 	if r.status_code == 200:
-		dict = r.json()
+		data = r.json()
 		return {
 			"uniq_name":uniq_name, 
-			"name":dict["app_name"], 
-			"price":dict["price"] 
+			"name":data["app_name"], 
+			"price":data["price"] 
 		}
 	else:
 		return None
