@@ -18,13 +18,17 @@ conn = None
 def connect():
 	global conn
 	conn = MySQLdb.connect(
-		host = cfg.host,
-		port = cfg.port,
-		user = cfg.user,
-		passwd = cfg.passwd,
-		db = cfg.db
+		host=cfg.host,
+		port=cfg.port,
+		user=cfg.user,
+		passwd=cfg.passwd,
+		db=cfg.db
 	)
 
+def commit():
+	if conn:
+		conn.commit()
+		
 def commit_and_close():
 	if conn:
 		conn.commit()
