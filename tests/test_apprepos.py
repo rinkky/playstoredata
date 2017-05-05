@@ -1,6 +1,10 @@
 # coding=utf-8
 
 import unittest
+import sys
+import os
+
+sys.path.append(os.path.join(sys.path[0],os.pardir))
 from apprepos import dbconfig
 from apprepos import apprepos
 
@@ -72,9 +76,9 @@ class TestApprepos(unittest.TestCase):
 		apprepos.clean_notice_apps()
 		apprepos.commit()
 		apps = apprepos.get_notice_apps_detail()
-		self.assertTrue(apps is None)
+		self.assertTrue(not apps)
 
-	def _clear_all_table():
+	def _clear_all_table(self):
 		cur = apprepos.conn.cursor()
 		sqlis = [
 			"delete from tb_apps",
@@ -82,4 +86,4 @@ class TestApprepos(unittest.TestCase):
 			"delete from tb_prices"
 		]
 		map(cur.execute,sqlis)
-		cur.cose()
+		cur.close()
