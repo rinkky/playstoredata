@@ -11,11 +11,9 @@ class TestApprepos(unittest.TestCase):
 		apprepos.connect()
 		self._clear_all_table()
 
-
 	def tearDown(self):
 		apprepos.commit_and_close()
 		print("tearDown")
-
 
 	def test_app_detail(self):
 		uniq_name="com.test.test"
@@ -75,7 +73,6 @@ class TestApprepos(unittest.TestCase):
 		apprepos.commit()
 		apps = apprepos.get_notice_apps_detail()
 		self.assertTrue(apps is None)
-
 
 	def _clear_all_table():
 		cur = apprepos.conn.cursor()
