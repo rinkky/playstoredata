@@ -4,4 +4,4 @@
 import playstoredata
 
 if __name__ == "__main__":
-	playstoredata.update_all_data_from_appmonsta()
+    playstoredata.update_all_data_from_appmonsta()
