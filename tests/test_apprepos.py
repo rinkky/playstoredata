@@ -1,6 +1,10 @@
 # coding=utf-8
 
 import unittest
+import sys
+import os
+
+sys.path.append(os.path.join(sys.path[0],os.pardir))
 from apprepos import dbconfig
 from apprepos import apprepos
 
@@ -10,7 +14,6 @@ class TestApprepos(unittest.TestCase):
         dbconfig.db = "noticemetest"
         apprepos.connect()
         self._clear_all_table()
-
 
     def tearDown(self):
         apprepos.commit_and_close()
@@ -46,7 +49,6 @@ class TestApprepos(unittest.TestCase):
             [apps[0].uniq_name, apps[0].name, apps[0].price]
         )
 
-
     def test_app_notice(self):
         uniq_name="com.test.test1"
         name="test"
@@ -74,7 +76,7 @@ class TestApprepos(unittest.TestCase):
         apprepos.clean_notice_apps()
         apprepos.commit()
         apps = apprepos.get_notice_apps_detail()
-        self.assertTrue(apps is None)
+        self.assertFalse(apps)
 
 
     def _clear_all_table():
@@ -85,4 +87,5 @@ class TestApprepos(unittest.TestCase):
             "delete from tb_prices"
         ]
         map(cur.execute,sqlis)
-        cur.cose()
+        cur.close()
+
